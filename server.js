@@ -33,8 +33,8 @@ app.get("/api/hello", function (req, res) {
 });
 
 app.get('/api/timestamp', function(req, res) {
-  let currentDate = Date.now();
-  res.json({'unix': currentDate, 'utc': currentDate.toUTCString()})
+  let currentDate = new Date();
+  res.json({'unix': currentDate.getTime(), 'utc': currentDate.toUTCString()})
 })
 
 app.get('/api/timestamp/:date?', function(req, res) {
