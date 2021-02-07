@@ -5,6 +5,14 @@
 var express = require('express');
 var app = express();
 
+function newDate() {
+  return Date().toString();
+};
+
+function newDateUnix() {
+  return newDate()/1000 | 0
+};
+
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
 var cors = require('cors');
@@ -24,9 +32,30 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+app.get('/api/timestamp', function(req, res) {
+  let currentDate = Date.now()/1000;
+  res.json({'unix': currentDate, 'utc': currentDate.toUTCString()})
+})
+
+app.get('/api/timestamp/:date?', function(req, res) {
+  let dateString = req.params.date;
+  let numberUNIX = new Date(parseInt(dateString));
+  if (parseInt(dateString) > 10000) {
+    res.json({'unix': numberUNIX.getTime(), 'utc': numberUNIX.toUTCString()})
+  }
+  let inputValue = new Date(dateString);
+  if (inputValue === "Invalid Date") {
+    res.json({'error': 'Invalid Date'});
+  } else {
+    res.json({
+      'unix': inputValue.getTime(),
+      'utc': inputValue.toUTCString()
+    })
+  }
+})
 
 
 // listen for requests :)
-var listener = app.listen(process.env.PORT, function () {
+var listener = app.listen(process.env.PORT || 65427, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
